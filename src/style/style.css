@@ -1,0 +1,16 @@
+.itemCard{
+    position: relative;
+}
+.itemCard img{
+width: 100%;
+}
+.price{
+    position: absolute;
+    background-color:turquoise;
+    border-radius: 10px;
+    top: 10px;
+    left: 10px;
+}
+.title{
+font-weight: 700;
+}
