@@ -47,7 +47,10 @@ async function fetchData() {
                 </div>
               `)
               .join('');
-          } else {
+          }else if(searchInput.length === 0){
+            displayData(data)
+          } 
+          else {
             itemDiv.innerHTML = `
             <p>There are no item with that name</p>
             `
