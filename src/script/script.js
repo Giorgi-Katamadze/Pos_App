@@ -48,7 +48,9 @@ async function fetchData() {
               `)
               .join('');
           } else {
-            displayData(data)
+            itemDiv.innerHTML = `
+            <p>There are no item with that name</p>
+            `
           }
         })
         .catch((error) => {
