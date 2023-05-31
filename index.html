@@ -11,11 +11,34 @@
 </head>
 <body>
     
-    <main class="container my-5">
-        <!-- <section id="payment">
-            <h1>No items in cart!</h1>
-        </section> -->
-        <section id="items" class="d-flex flex-wrap gap-5 justify-content-center col-12"></section>
+    <main class="my-5">
+        <section id="payment" class="cart col-11 mx-auto pt-3">
+            <div class="d-flex col-12 container px-3 gap-3 align-items-center">
+                <span style="color: Dodgerblue;">
+                    <i class="fa-solid fa-basket-shopping fa-2xl"></i>
+                </span>
+                <h1>Cart</h1>
+            </div>
+            <div id="cartItems" class="my-5 col-12 d-flex justify-content-center p-3">
+                <h1>No items in cart!</h1>
+            </div>
+        </section>
+
+        <section class="my-5 col-11 container">
+            <header class="productHeader d-flex flex-column gap-2 justify-content-center align-items-center">
+                <div class="d-flex col-12 container px-3 gap-3 align-items-center">
+                    <span style="color: Dodgerblue;">
+                        <i class="fa-sharp fa-solid fa-store fa-2xl"></i>
+                    </span>
+                    <h1>Products</h1>
+                </div>
+            </header>
+            <div class="col-12 d-flex justify-content-center align-items-center mt-3">
+                <input type="text" class="col-11 px-2 py-1" id="searchInput" placeholder="Search by product name...">
+            </div>
+            <div id="items" class="d-flex pt-4 flex-wrap gap-3 justify-content-center col-12"></div>
+        </section>
+        
 
     </main>
 
