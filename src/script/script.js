@@ -1,13 +1,13 @@
 //import
 
-import instance from "../script/ApiServices/apiService.js";
+import { getProducts } from "../script/ApiServices/apiService.js";
 
 //fetching by using axios
 
 async function fetchData() {
   try {
-    const data = await instance();
-    displayData(data);
+    const data = await getProducts();
+    displayData(data.data);
   } catch (error) {
     console.error("Error:", error);
   }

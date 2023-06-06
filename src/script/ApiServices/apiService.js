@@ -1,16 +1,11 @@
-//export api services using axios for fetching
+// create axios instance
+const instance = axios.create({
+  baseURL: "https://hplussport.com/api",
+  Headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+});
 
-const instance = async () => {
-  try {
-    const response = await axios.get(
-      "https://hplussport.com/api/products/order/price"
-    );
-    const data = response.data;
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error("Error:", error);
-    throw error;
-  }
-};
-export default instance;
+// Define api endpoints
+export const getProducts = () => instance.get("/products/order/price");
