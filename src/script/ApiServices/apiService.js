@@ -9,3 +9,5 @@ const instance = axios.create({
 
 // Define api endpoints
 export const getProducts = () => instance.get("/products/order/price");
+
+

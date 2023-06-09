@@ -57,3 +57,34 @@ section{
     height: 76vh;
     overflow-y: scroll;
 }
+#cartItems h6{
+    font-weight: bold;
+}
+#cartItems header button{
+    border: none;
+    background-color: red;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+}
+    
+#cartItems footer button{
+    border: none;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 20px;
+    background-color: green;
+    font-size: 20px;
+    /* width:40%; */
+}
+#cartItems footer button:first-child{
+    background-color: red;
+}
+#cartItems footer h1{
+    width: 100%;
+    background-color: blue;
+    text-align: center;
+    padding: 10px;
+    border-radius: 20px;
+    color: white;
+}
