@@ -6,8 +6,11 @@ import { getProducts } from "../script/ApiServices/apiService.js";
 
 async function fetchData() {
   try {
-    const data = await getProducts();
-    displayData(data.data);
+    const res = await getProducts();
+    console.log(res)
+    const data = res.data
+    console.log(data)
+    displayData(data);
   } catch (error) {
     console.error("Error:", error);
   }
@@ -31,53 +34,42 @@ function displayData(data) {
       `
     )
     .join("");
+
+    //allow user search for items
+
+function searchItems(data) {
+  const dataArray = Array.from(data)
+  const searchInput = document.getElementById("searchInput").value.toLowerCase();
+  const filteredData = dataArray.filter(item => item.name.toLowerCase().includes(searchInput))
+  const itemDiv = document.getElementById("items");
+
+  if(searchInput.length > 0){
+      itemDiv.innerHTML = filteredData
+        .map(
+          (item) => `
+            <div class="p-3 itemCard pb-4 d-flex flex-column gap-2">
+              <img src="${item.image}">
+              <p class="title">${item.name}</p>
+              <div class="id">
+                <p>#${item.id}</p>
+              </div>
+              <p class="price px-2">${item.price}$</p>
+            </div>
+          `
+        )
+        .join("");
+    } else if (searchInput.length === 0) {
+      displayData(data);
+    } else if(filteredData.length === 0){
+      itemDiv.innerHTML = `
+        <p>There are no item with that name</p>
+        `;
+    }
 }
-
-//allow user search for items
-
-function searchItems(event) {
-  // event.preventDefault()
-  const searchInput = document
-    .getElementById("searchInput")
-    .value.toLowerCase();
-  if (searchInput) {
-    fetch("https://hplussport.com/api/products/order/price")
-      .then((res) => res.json())
-      .then((data) => {
-        const searchItem = data.filter((item) =>
-          item.name.toLowerCase().includes(searchInput)
-        );
-
-        const itemDiv = document.getElementById("items");
-        if (searchItem.length > 0) {
-          itemDiv.innerHTML = searchItem
-            .map(
-              (item) => `
-                <div class="p-3 itemCard pb-4 d-flex flex-column gap-2">
-                  <img src="${item.image}">
-                  <p class="title">${item.name}</p>
-                  <div class="id">
-                    <p>#${item.id}</p>
-                  </div>
-                  <p class="price px-2">${item.price}$</p>
-                </div>
-              `
-            )
-            .join("");
-        } else if (searchInput.length === 0) {
-          displayData(data);
-        } else {
-          itemDiv.innerHTML = `
-            <p>There are no item with that name</p>
-            `;
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }
+document.getElementById("searchInput").addEventListener("input", () => {
+  searchItems(data);
+});
 }
-document.getElementById("searchInput").addEventListener("input", searchItems);
 
 fetchData();
 
@@ -85,7 +77,7 @@ fetchData();
 
 const selectedItems = [];
 
-function addToCart() {
+function addToCart(data) {
   const itemDiv = document.getElementById("items");
   itemDiv.addEventListener("click", (event) => {
     const clickedItem = event.target.closest(".itemCard");
@@ -108,10 +100,27 @@ function addToCart() {
         return;
       }
       selectedItems.push(selectedItem);
-      // import html element 
-      const cartItems = document.getElementById('cartItems')
+      // import html element
+      const cartItems = document.getElementById("cartItems");
       cartItems.innerHTML = `
       <div>
+      <header class="d-flex gap-3 justify-content-around">
+            <div> 
+                  <h6>Product</h6>
+            </div>
+            <div> 
+                  <h6>Price</h6>
+            </div>
+            <div> 
+                  <h6>Qty</h6>
+            </div>
+            <div> 
+                  <h6>Subtotal</h6>
+            </div>
+            <div>
+                  <h6>Action</h6>
+            </div>
+      </header>
         <div id="ChoosedItems"></div>
         <div class="d-flex justify-content-around flex-wrap gap-3 col-10 mx-auto">
             <div class="d-flex flex-column col-4">
@@ -135,32 +144,34 @@ function addToCart() {
             </div>
         </footer>
       </div>
-      `
-      const ChoosedItems = cartItems.querySelector("#ChoosedItems")
-      ChoosedItems.innerHTML += selectedItems.map((item) =>`
+      `;
+      const ChoosedItems = cartItems.querySelector("#ChoosedItems");
+      ChoosedItems.innerHTML += selectedItems
+        .map(
+          (item) => `
       <header class="d-flex gap-3 justify-content-around">
             <div> 
-                  <h6>Product</h6>
+                  
                   <p>${item.name}</p>
             </div>
             <div> 
-                  <h6>Price</h6>
+                  
                   <p>${item.price}</p>
             </div>
             <div> 
-                  <h6>Qty</h6>
+                  
             </div>
             <div> 
-                  <h6>Subtotal</h6>
+                  
             </div>
             <div>
-                  <h6>Action</h6>
                   <button><i class="fa-solid fa-trash"></i></button>
             </div>
       </header>
-      `)
-      .join('')
+      `
+        )
+        .join("");
     }
   });
 }
-addToCart()
+addToCart();
