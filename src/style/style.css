@@ -88,3 +88,8 @@ section{
     border-radius: 20px;
     color: white;
 }
+
+#cartItems .decrement-btn, #cartItems .increment-btn{
+background-color: grey;
+border-radius: 8px;
+}

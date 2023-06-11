@@ -7,7 +7,6 @@ import { getProducts } from "../script/ApiServices/apiService.js";
 async function fetchData() {
   try {
     const res = await getProducts();
-    console.log(res)
     const data = res.data
     console.log(data)
     displayData(data);
@@ -31,9 +30,29 @@ function displayData(data) {
           </div>
           <p class="price px-2">${item.price}$</p>
         </div>
-      `
+      `,
     )
     .join("");
+    const itemCards = itemDiv.getElementsByClassName("itemCard");
+  Array.from(itemCards).forEach((itemCard, index) => {
+    itemCard.addEventListener("click", () => {
+      const selectedItem = data[index];
+
+      let selectedItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+      const isItemInCart = selectedItems.some(
+        (item) => item.id === selectedItem.id
+      );
+      if (isItemInCart) {
+        alert("Item is already added to the cart.");
+        return;
+      }
+      selectedItems.push(selectedItem);
+      localStorage.setItem("cartItems", JSON.stringify(selectedItems));
+      displayCartItems();
+    });
+  });
+    
+    
 
     //allow user search for items
 
@@ -73,54 +92,33 @@ document.getElementById("searchInput").addEventListener("input", () => {
 
 fetchData();
 
-//add to cart func
+//cart func
 
-const selectedItems = [];
-
-function addToCart(data) {
-  const itemDiv = document.getElementById("items");
-  itemDiv.addEventListener("click", (event) => {
-    const clickedItem = event.target.closest(".itemCard");
-    if (clickedItem) {
-      // targer elements
-      const itemName = clickedItem.querySelector(".title").textContent;
-      const itemId = clickedItem.querySelector(".id").textContent;
-      const itemPrice = clickedItem.querySelector(".price").textContent;
-      const selectedItem = {
-        name: itemName,
-        id: itemId,
-        price: itemPrice,
-      };
-      // Check if item is already in the cart
-      const isItemInCart = selectedItems.some(
-        (item) => item.id === selectedItem.id
-      );
-      if (isItemInCart) {
-        alert("Item is already added to the cart.");
-        return;
-      }
-      selectedItems.push(selectedItem);
-      // import html element
-      const cartItems = document.getElementById("cartItems");
-      cartItems.innerHTML = `
-      <div>
-      <header class="d-flex gap-3 justify-content-around">
-            <div> 
-                  <h6>Product</h6>
-            </div>
-            <div> 
-                  <h6>Price</h6>
-            </div>
-            <div> 
-                  <h6>Qty</h6>
-            </div>
-            <div> 
-                  <h6>Subtotal</h6>
-            </div>
-            <div>
-                  <h6>Action</h6>
-            </div>
-      </header>
+function displayCartItems() {
+  const cartItems = JSON.parse(localStorage.getItem("cartItems"));
+  if (cartItems && cartItems.length > 0) {
+    const cartItemsDiv = document.getElementById("cartItems");
+    cartItemsDiv.innerHTML =  `
+        <div>
+        <header class="d-flex gap-3 justify-content-around">
+    <div> 
+          <h6>Product</h6>
+          
+    </div>
+    <div> 
+          <h6>Price</h6>
+          
+    </div>
+    <div> 
+          <h6>Qty</h6>
+    </div>
+    <div> 
+          <h6>Subtotal</h6>
+    </div>
+    <div>
+          <h6>Action</h6>
+    </div>
+</header>
         <div id="ChoosedItems"></div>
         <div class="d-flex justify-content-around flex-wrap gap-3 col-10 mx-auto">
             <div class="d-flex flex-column col-4">
@@ -139,39 +137,71 @@ function addToCart(data) {
         <footer class="my-3">
             <h1 class="col-8">Total price:</h1>
             <div class="d-flex justify-content-around col-10 mx-auto">
-            <button><i class="fa-solid fa-power-off"></i>  Reset</button>
+            <button id="resetBtn"><i class="fa-solid fa-power-off"></i>  Reset</button>
             <button><i class="fa-solid fa-file-invoice-dollar fa-sm"></i>  Invoice</button>
             </div>
         </footer>
       </div>
-      `;
-      const ChoosedItems = cartItems.querySelector("#ChoosedItems");
-      ChoosedItems.innerHTML += selectedItems
-        .map(
-          (item) => `
-      <header class="d-flex gap-3 justify-content-around">
-            <div> 
-                  
-                  <p>${item.name}</p>
-            </div>
-            <div> 
-                  
-                  <p>${item.price}</p>
-            </div>
-            <div> 
-                  
-            </div>
-            <div> 
-                  
-            </div>
-            <div>
-                  <button><i class="fa-solid fa-trash"></i></button>
-            </div>
-      </header>
+        `
+        const resetBtn = document.getElementById('resetBtn')
+        resetBtn.addEventListener('click',()=>{
+          localStorage.removeItem("cartItems");
+          displayCartItems()
+        })
+     let index = 1
+      ChoosedItems.innerHTML += cartItems.map((item)=> `
+      <header class="d-flex gap-3 justify-content-start">
+    <div class="col-2"> 
+          <p>${item.name} #${item.id}</p>
+    </div>
+    <div class="col-1"> 
+          <p>${item.price}$</p>
+    </div>
+    <div class="col-4 d-flex gap-2"> 
+        <button class="decrement-btn">-</button>
+        <div><span>${index}</span></div>
+        <button class="increment-btn">+</button>
+    </div>
+    <div class="col-1"> 
+        <p id="subtotal"></p>
+    </div>
+    <div class="col-2">
+          <button id="deleteBtn"><i class="fa-solid fa-trash"></i></button>
+    </div>
+</header>
       `
-        )
-        .join("");
-    }
-  });
+      ).join('')
+      const decrementBtns = document.querySelectorAll('.decrement-btn')
+      const incrementBtns = document.querySelectorAll('.increment-btn')
+      const deleteBts = document.querySelectorAll("#deleteBtn");
+      console.log(index)
+
+      deleteBts.forEach((deleteButton, index) => {
+        deleteButton.addEventListener("click", () => {
+          const selectedItem = cartItems[index];
+          const updatedCartItems = cartItems.filter(
+            (item) => item.id !== selectedItem.id
+          );
+          localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+    
+          // Re-display the cart items
+          displayCartItems();
+        });
+      });
+  } else{
+    const cartItemsDiv = document.getElementById("cartItems");
+    cartItemsDiv.innerHTML=`
+    <h1>No items in cart!</h1>`
+  }
 }
-addToCart();
+
+displayCartItems()
+
+document.addEventListener('DOMContentLoaded', () => {
+  displayCartItems()
+})
+
+
+
+
+
