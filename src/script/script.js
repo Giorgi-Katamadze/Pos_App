@@ -49,7 +49,9 @@ function displayData(data) {
         (item) => item.id === selectedItem.id
       );
       if (isItemInCart) {
-        alert("Item is already added to the cart.");
+        Swal.fire(
+          'Item is already in the cart',
+        )
         return;
       }
       selectedItem.quantity = 1; 
@@ -187,21 +189,21 @@ function displayCartItems(data) {
 
       ChoosedItems.innerHTML += `
         <header class="d-flex gap-3 justify-content-start">
-          <div class="col-3">
+          <div class="col-2 col-sm-3 col-lg-3">
             <p>${item.name} #${item.id}</p>
           </div>
-          <div class="col-2">
+          <div class="col-1">
             <p>${item.price}$</p>
           </div>
-          <div class="col-2 d-flex gap-2">
+          <div class="col-3 d-flex gap-2">
             <button class="decrement-btn">-</button>
             <div class="qty">${item.quantity}</div>
             <button class="increment-btn">+</button>
           </div>
-          <div class="col-1">
+          <div class="col-2">
             <p class="subtotal">${subtotal}$</p>
           </div>
-          <div class="col-3 d-flex justify-content-center">
+          <div class=" d-flex justify-content-center">
             <button class="deleteBtn"><i class="fa-solid fa-trash"></i></button>
           </div>
         </header>
@@ -311,6 +313,6 @@ function displayCartItems(data) {
     }
   } else {
     const cartItemsDiv = document.getElementById("cartItems");
-    cartItemsDiv.innerHTML = `<p>Your cart is empty.</p>`;
+    cartItemsDiv.innerHTML = `<h1>No items in cart!</h1>`;
   }
 }
